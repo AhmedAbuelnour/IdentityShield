@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="UseCases\Users\Commands\" />
+    <Folder Include="UseCases\Users\EventHandlers\" />
+    <Folder Include="UseCases\Users\Queries\" />
+    <Folder Include="UseCases\Permissions\Commands\" />
+    <Folder Include="UseCases\Permissions\EventHandlers\" />
+    <Folder Include="UseCases\Permissions\Queries\" />
+    <Folder Include="UseCases\Clients\EventHandlers\" />
+    <Folder Include="UseCases\Clients\Queries\" />
+    <Folder Include="UseCases\Groups\Commands\" />
+    <Folder Include="UseCases\Groups\EventHandlers\" />
+    <Folder Include="UseCases\Groups\Queries\" />
+    <Folder Include="UseCases\Realms\CreateRealm\EventHandlers\" />
+    <Folder Include="UseCases\Realms\Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ErrorOr" Version="2.0.1" />
+    <PackageReference Include="Flaminco.ManualMapper" Version="1.3.0" />
+    <PackageReference Include="Flaminco.MinimalMediatR" Version="2.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IdentityShield.Domain\IdentityShield.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

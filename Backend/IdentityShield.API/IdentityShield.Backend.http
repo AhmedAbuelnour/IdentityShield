@@ -1,0 +1,6 @@
+@IdentityShield.Backend_HostAddress = http://localhost:5108
+
+GET {{IdentityShield.Backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
