@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-IdentityShield.API-86e546f5-2c38-42ee-b0b4-2fdd22eb65a4</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+	  <PackageReference Include="Microsoft.Garnet" Version="1.0.19" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IdentityShield.Infrastructure\IdentityShield.Infrastructure.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Flaminco.OperationResults" />
+	</ItemGroup>
+</Project>

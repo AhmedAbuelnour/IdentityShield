@@ -8,6 +8,6 @@ namespace IdentityShield.Domain.Entities
         public required string ClaimValue { get; set; } // The value of the claim {{Role}}
         public bool IsDynamic { get; set; } // false
         public Guid ClientId { get; set; }
-        [ForeignKey(nameof(ClientId))] public Client Client { get; set; } = default!;
+        [ForeignKey(nameof(ClientId))] public ShieldClient Client { get; set; } = default!;
     }
 }

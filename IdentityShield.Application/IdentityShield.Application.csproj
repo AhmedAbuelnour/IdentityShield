@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+	  <PackageReference Include="Flaminco.MinimalMediatR" Version="2.1.4" />
+	  <PackageReference Include="Flaminco.OperationResults" Version="1.0.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" NoWarn="NU1605" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IdentityShield.Domain\IdentityShield.Domain.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Flaminco.OperationResults" />
+		<Using Include="Microsoft.AspNetCore.Http" />
+		<Using Include="Microsoft.AspNetCore.Mvc" />
+		<Using Include="IdentityShield.Application.Shields" />
+		<Using Include="IdentityShield.Domain.Constants" />
+		<Using Include="IdentityShield.Application.TokenService" />
+	</ItemGroup>
+	
+</Project>

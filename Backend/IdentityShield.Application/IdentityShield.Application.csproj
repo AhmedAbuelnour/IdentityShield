@@ -26,6 +26,9 @@
     <PackageReference Include="ErrorOr" Version="2.0.1" />
     <PackageReference Include="Flaminco.ManualMapper" Version="1.3.0" />
     <PackageReference Include="Flaminco.MinimalMediatR" Version="2.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="OpenIddict.AspNetCore" Version="5.8.0" />
+    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="5.8.0" />
   </ItemGroup>
 
   <ItemGroup>
