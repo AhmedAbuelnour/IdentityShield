@@ -17,9 +17,9 @@ namespace IdentityShield.API.Modules
 
             group.MediateDelete<RemoveManagedAccountCommand.Command>("/Unlink").WithName("Account-Linking-Unlink");
 
-            group.MediateGet<GetManagedAccountsQuery.Query>("/Managed/All").WithName("Account-Linking-Managed-Get-All");
+            group.MediateGet<GetManagedAccountsQuery.Query>("/Manager/{ManagerId}").WithName("Account-Linking-Managed-Get-All");
 
-            group.MediateGet<GetManagedByAccountsQuery.Query>("/ManagedBy/All").WithName("Account-Linking-ManagedBy-Get-All");
+            group.MediateGet<GetManagedByAccountsQuery.Query>("/Managed/{ManagedId}").WithName("Account-Linking-ManagedBy-Get-All");
         }
     }
 }
