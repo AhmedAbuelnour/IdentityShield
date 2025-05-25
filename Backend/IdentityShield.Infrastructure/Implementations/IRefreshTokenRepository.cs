@@ -59,14 +59,24 @@ namespace IdentityShield.Infrastructure.Implementations
             return _dbContext.Set<ShieldRefreshToken>().Where(a => a.Token == token).ExecuteDeleteAsync(cancellationToken);
         }
 
-        public Task<bool> CheckActiveSessionAsync(IdentityUser user, CancellationToken cancellationToken)
+        public async Task<bool> CheckActiveSessionAsync(IdentityUser user, CancellationToken cancellationToken)
         {
-            return _dbContext.Set<ShieldRefreshToken>().Where(a => a.UserId == user.Id).AnyAsync(cancellationToken);
+            List<ShieldRefreshToken> activeTokens = await _dbContext.Set<ShieldRefreshToken>().Where(a => a.UserId == user.Id && a.RevokedAt == null).ToListAsync(cancellationToken);
+
+            foreach (ShieldRefreshToken token in activeTokens)
+            {
+                if (token.IsActive)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        public Task<int> LogoutAsync(string token, CancellationToken cancellationToken)
+        public Task<int> LogoutAsync(string userId, CancellationToken cancellationToken)
         {
-            return _dbContext.Set<ShieldRefreshToken>().Where(a => a.Token == token).ExecuteDeleteAsync(cancellationToken);
+            return _dbContext.Set<ShieldRefreshToken>().Where(a => a.UserId == userId).ExecuteDeleteAsync(cancellationToken);
         }
 
         public Task<ShieldRefreshToken?> GetNonRevokedRefreshTokenAsync(IdentityUser user, CancellationToken cancellationToken)

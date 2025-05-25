@@ -1,6 +1,5 @@
 ﻿using Flaminco.MinimalMediatR.Abstractions;
 using Flaminco.MinimalMediatR.Exceptions;
-using IdentityShield.Application.Contracts;
 using IdentityShield.Domain.Entities;
 using IdentityShield.Domain.Options;
 using Microsoft.AspNetCore.Identity;
@@ -30,8 +29,7 @@ namespace IdentityShield.Application.Endpoints.Auth.Logout.Commands
 
         public sealed class Handler(ShieldUserManager _userManager,
                              SignInManager<ShieldUser> _signInManager,
-                             IOptions<ShieldOptions> _shieldOptions,
-                             INotificationService _notificationService) : IEndPointRequestHandler<Command>
+                             IOptions<ShieldOptions> _shieldOptions) : IEndPointRequestHandler<Command>
         {
             public async Task<IResult> Handle(Command request, CancellationToken cancellationToken)
             {

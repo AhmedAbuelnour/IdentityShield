@@ -10,7 +10,7 @@ namespace IdentityShield.Application.Contracts
         Task<int> DeleteConsumedTokenAsync(string token, CancellationToken cancellationToken);
         Task<bool> ValidateRefreshTokenAsync(string token, CancellationToken cancellationToken);
         Task<bool> CheckActiveSessionAsync(IdentityUser user, CancellationToken cancellationToken);
-        Task<int> LogoutAsync(string token, CancellationToken cancellationToken);
+        Task<int> LogoutAsync(string userId, CancellationToken cancellationToken);
         Task<ShieldRefreshToken?> GetNonRevokedRefreshTokenAsync(IdentityUser user, CancellationToken cancellationToken);
     }
 }

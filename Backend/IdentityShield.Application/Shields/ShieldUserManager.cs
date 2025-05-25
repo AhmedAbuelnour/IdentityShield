@@ -30,13 +30,13 @@ namespace IdentityShield.Application.Shields
 
         public async Task<bool> ActiveSessionDetectedAsync<TUser>(TUser user) where TUser : ShieldUser
         {
-            if (_shieldOptions.Value.SingleActiveSessionEnabled && await CheckActiveSessionAsync(user, CancellationToken))
+            if (_shieldOptions.Value.SingleActiveSessionEnabled && await CheckActiveSessionAsync(user))
             {
                 if (user.Attributes?.TryGetValue("EnforcedLogoutEnabled", out object? value) == true
                     && value is JsonElement enabledLogoutEnabledJson
                     && enabledLogoutEnabledJson.Deserialize<bool>())
                 {
-                    await LogoutAsync(user.Id);
+                    await LogoutAsync(user);
                 }
                 else
                 {
@@ -62,7 +62,7 @@ namespace IdentityShield.Application.Shields
             return _accountLinkingRepo.IsActiveLinkedAsync(managerAccount.Id, managedAccount.Id, CancellationToken);
         }
 
-        public async Task<int> LinkManagedAccountAsync<TUser>(TUser managerAccount, TUser managedAccount) where TUser : ShieldUser
+        public async Task<int> LinkManagedAccountAsync<TUser>(TUser managerAccount, TUser managedAccount, string linkType = "Full-Control") where TUser : ShieldUser
         {
             if (await _accountLinkingRepo.IsDisabledLinkedAsync(managerAccount.Id, managedAccount.Id, CancellationToken))
             {
@@ -70,7 +70,7 @@ namespace IdentityShield.Application.Shields
             }
             else
             {
-                return await _accountLinkingRepo.LinkAsync(managerAccount.Id, managedAccount.Id, "Full-Control", CancellationToken);
+                return await _accountLinkingRepo.LinkAsync(managerAccount.Id, managedAccount.Id, linkType, CancellationToken);
             }
         }
 
@@ -224,9 +224,9 @@ namespace IdentityShield.Application.Shields
             return null;
         }
 
-        public async Task<IdentityResult> LogoutAsync(string refreshToken)
+        public async Task<IdentityResult> LogoutAsync<TUser>(TUser user) where TUser : IdentityUser
         {
-            if (await _refreshTokenRepo.LogoutAsync(refreshToken, CancellationToken) > 0)
+            if (await _refreshTokenRepo.LogoutAsync(user.Id, CancellationToken) > 0)
             {
                 return IdentityResult.Success;
             }
@@ -234,22 +234,20 @@ namespace IdentityShield.Application.Shields
             return IdentityResult.Failed();
         }
 
-        public async Task<IdentityResult> LogoutAsync<TUser>(TUser user) where TUser : IdentityUser
+        public async Task<IdentityResult> LogoutAsync(string refreshToken)
         {
-            if (await _refreshTokenRepo.GetNonRevokedRefreshTokenAsync(user, CancellationToken) is ShieldRefreshToken refreshToken)
+            if (await _refreshTokenRepo.GetUserByRefreshTokenAsync(refreshToken, CancellationToken) is ShieldUser user
+                && await _refreshTokenRepo.LogoutAsync(user.Id, CancellationToken) > 0)
             {
-                if (await _refreshTokenRepo.LogoutAsync(refreshToken.Token, CancellationToken) > 0)
-                {
-                    return IdentityResult.Success;
-                }
+                return IdentityResult.Success;
             }
+
             return IdentityResult.Failed();
         }
 
-
-        private Task<bool> CheckActiveSessionAsync<TUser>(TUser user, CancellationToken cancellationToken) where TUser : IdentityUser
+        private Task<bool> CheckActiveSessionAsync<TUser>(TUser user) where TUser : IdentityUser
         {
-            return _refreshTokenRepo.CheckActiveSessionAsync(user, cancellationToken);
+            return _refreshTokenRepo.CheckActiveSessionAsync(user, CancellationToken);
         }
 
 
