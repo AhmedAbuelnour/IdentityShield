@@ -1,21 +1,26 @@
-﻿using Flaminco.ManualMapper.Extensions;
-using IdentityShield.Application.Interfaces.Services;
-using IdentityShield.Application.Services;
+﻿using Flaminco.MinimalMediatR.Extensions;
+using IdentityShield.Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IdentityShield.Application
+namespace IdentityShield.Application;
+
+public static class ApplicationDIContainer
 {
-    public static class ApplicationDIContainer
+    public static IServiceCollection AddApplicationDIContainer(this IServiceCollection services)
     {
-        public static IServiceCollection AddApplicationDIContainer(this IServiceCollection services)
+        services.AddMediatR(config =>
         {
-            services.AddMediatR(a => a.RegisterServicesFromAssemblyContaining<ApplicationScanner>());
-            services.AddManualMapper<ApplicationScanner>();
+            config.RegisterServicesFromAssemblyContaining<IMarkupAssemblyScanning>();
+        });
 
-            services.AddScoped<IClientService, ClientService>();
-            services.AddScoped<IRealmService, RealmService>();
+        services.AddScoped<JwtTokenProvider<ShieldUser>>();
 
-            return services;
-        }
+        services.AddValidationExceptionHandler();
+
+        services.AddBusinessExceptionHandler();
+
+        services.AddProblemDetails();
+
+        return services;
     }
 }
