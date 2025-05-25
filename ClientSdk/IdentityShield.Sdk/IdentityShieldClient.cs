@@ -167,33 +167,40 @@ namespace IdentityShield.Sdk
         #region Account Linking APIs
 
         // Create managed account
-        public async Task<CreateManagedAccount.Response> CreateManagedAccountAsync(CreateManagedAccount.Request request, CancellationToken cancellationToken)
+        public async Task<bool> CreateManagedAccountAsync(CreateManagedAccountRequest request, CancellationToken cancellationToken)
         {
-            return await PostAsync<CreateManagedAccount.Response>("/Shield/AccountLinking/Create", request, cancellationToken);
+            return await PostAsync<bool>("/Shield/AccountLinking/Create", request, cancellationToken);
         }
 
         // Link managed account
-        public async Task<LinkManagedAccount.Response> LinkManagedAccountAsync(LinkManagedAccount.Request request, CancellationToken cancellationToken)
+        public async Task<bool> LinkManagedAccountAsync(string managedAccountId, string linkType)
         {
-            return await PostAsync<LinkManagedAccount.Response>("/Shield/AccountLinking/Link", request, cancellationToken);
+            return await PostAsync<bool>("/Shield/AccountLinking/Link", new
+            {
+                managedAccountId,
+                linkType
+            });
         }
 
         // Unlink managed account
-        public async Task<UnlinkManagedAccount.Response> UnlinkManagedAccountAsync(UnlinkManagedAccount.Request request, CancellationToken cancellationToken)
+        public async Task<bool> UnlinkManagedAccountAsync(string managedAccountId)
         {
-            return await DeleteAsync<UnlinkManagedAccount.Response>("/Shield/AccountLinking/Unlink", request, cancellationToken);
+            return await DeleteAsync<bool>("/Shield/AccountLinking/Unlink", new
+            {
+                managedAccountId
+            });
         }
 
         // Get all managed accounts
-        public async Task<GetManagerAccounts.Response> GetManagedAccountsAsync(GetManagerAccounts.Request request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ShieldUser>> GetManagedAccountsAsync()
         {
-            return await GetAsync<GetManagerAccounts.Response>($"/Shield/AccountLinking/Manager/{request.ManagerId}", cancellationToken);
+            return await GetAsync<IEnumerable<ShieldUser>>("/Shield/AccountLinking/Managed/All");
         }
 
         // Get all accounts managing this account
-        public async Task<GetManagedAccounts.Response> GetManagedByAccountsAsync(GetManagedAccounts.Request request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ShieldUser>> GetManagedByAccountsAsync()
         {
-            return await GetAsync<GetManagedAccounts.Response>($"/Shield/AccountLinking/Managed/{request.ManagedId}", cancellationToken);
+            return await GetAsync<IEnumerable<ShieldUser>>("/Shield/AccountLinking/ManagedBy/All");
         }
 
         #endregion
@@ -334,11 +341,11 @@ namespace IdentityShield.Sdk
 
         #region HTTP Helper Methods
 
-        private async Task<T> GetAsync<T>(string endpoint, CancellationToken cancellationToken = default)
+        private async Task<T> GetAsync<T>(string endpoint)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(endpoint, cancellationToken);
+            HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
 
-            string content = await response.Content.ReadAsStringAsync(cancellationToken);
+            string content = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<T>(content, _jsonOptions);
         }
 
@@ -352,7 +359,7 @@ namespace IdentityShield.Sdk
             return JsonSerializer.Deserialize<T>(responseContent, _jsonOptions);
         }
 
-        private async Task<T> DeleteAsync<T>(string endpoint, object data, CancellationToken cancellationToken = default)
+        private async Task<T> DeleteAsync<T>(string endpoint, object data)
         {
             string json = JsonSerializer.Serialize(data, _jsonOptions);
             var request = new HttpRequestMessage(HttpMethod.Delete, endpoint)
@@ -360,9 +367,9 @@ namespace IdentityShield.Sdk
                 Content = new StringContent(json, Encoding.UTF8, "application/json")
             };
 
-            HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
 
-            string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            string responseContent = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<T>(responseContent, _jsonOptions);
         }
 

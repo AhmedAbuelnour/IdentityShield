@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IdentityShield.Contracts\IdentityShield.Contracts.csproj" />
     <ProjectReference Include="..\IdentityShield.Domain\IdentityShield.Domain.csproj" />
   </ItemGroup>
 

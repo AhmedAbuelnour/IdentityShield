@@ -1,13 +1,5 @@
-using IdentityShield.Contracts.AccountLinking;
-using IdentityShield.Contracts.Authentication.Login;
-using IdentityShield.Contracts.Authentication.Logout;
-using IdentityShield.Contracts.Authentication.Register;
-using IdentityShield.Contracts.EmailManagement;
-using IdentityShield.Contracts.Models;
-using IdentityShield.Contracts.PasswordManagement;
-using IdentityShield.Contracts.PhoneNumberManagement;
-using IdentityShield.Contracts.ProviderManagement;
-using IdentityShield.Contracts.TokenManagement;
+using IdentityShield.Domain.Entities;
+using IdentityShield.Domain.Models;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -49,152 +41,125 @@ namespace IdentityShield.Client
         #region Authentication APIs
 
         // Login with email
-        public async Task<LoginResponse> LoginByEmailAsync(string email, string password)
+        public async Task<JwtResponse> LoginByEmailAsync(string email, string password)
         {
-            var request = new LoginByEmailRequest
+            return await PostAsync<JwtResponse>("/Shield/Authentication/Login/Email", new
             {
-                Email = email,
-                Password = password
-            };
-            
-            return await PostAsync<LoginResponse>("/Shield/Authentication/Login/Email", request);
+                email,
+                password
+            });
         }
 
         // Login with phone number
-        public async Task<LoginResponse> LoginByPhoneNumberAsync(string phoneNumber, string password)
+        public async Task<JwtResponse> LoginByPhoneNumberAsync(string phoneNumber, string password)
         {
-            var request = new LoginByPhoneNumberRequest
+            return await PostAsync<JwtResponse>("/Shield/Authentication/Login/PhoneNumber", new
             {
-                PhoneNumber = phoneNumber,
-                Password = password
-            };
-            
-            return await PostAsync<LoginResponse>("/Shield/Authentication/Login/PhoneNumber", request);
+                phoneNumber,
+                password
+            });
         }
 
         // Login with provider
-        public async Task<LoginResponse> LoginByProviderAsync(string providerName, string providerValue)
+        public async Task<JwtResponse> LoginByProviderAsync(string providerName, string providerValue)
         {
-            var request = new LoginByProviderRequest
+            return await PostAsync<JwtResponse>("/Shield/Authentication/Login/Provider", new
             {
-                ProviderName = providerName,
-                ProviderValue = providerValue
-            };
-            
-            return await PostAsync<LoginResponse>("/Shield/Authentication/Login/Provider", request);
+                providerName,
+                providerValue
+            });
         }
 
         // Login as managed account
-        public async Task<LoginResponse> LoginAsManagedAccountAsync(string managedAccountId)
+        public async Task<JwtResponse> LoginAsManagedAccountAsync(string managedAccountId)
         {
-            var request = new LoginByManagedAccountRequest
+            return await PostAsync<JwtResponse>("/Shield/Authentication/Login/ManagedAccount", new
             {
-                ManagedAccountId = managedAccountId
-            };
-            
-            return await PostAsync<LoginResponse>("/Shield/Authentication/Login/ManagedAccount", request);
+                managedAccountId
+            });
         }
 
         // Register with email
-        public async Task<RegisterResponse> RegisterByEmailAsync(string email, string password)
+        public async Task<object> RegisterByEmailAsync(string email, string password)
         {
-            var request = new RegisterByEmailRequest
+            return await PostAsync<object>("/Shield/Authentication/Register/Email", new
             {
-                Email = email,
-                Password = password
-            };
-            
-            return await PostAsync<RegisterResponse>("/Shield/Authentication/Register/Email", request);
+                email,
+                password
+            });
         }
 
         // Confirm email registration
-        public async Task<LoginResponse> ConfirmEmailRegistrationAsync(string email, string token)
+        public async Task<JwtResponse> ConfirmEmailRegistrationAsync(string email, string token)
         {
-            var request = new ConfirmEmailRegistrationRequest
+            return await PostAsync<JwtResponse>("/Shield/Authentication/Register/Confirm/Email", new
             {
-                Email = email,
-                Token = token
-            };
-            
-            return await PostAsync<LoginResponse>("/Shield/Authentication/Register/Confirm/Email", request);
+                email,
+                token
+            });
         }
 
         // Register with phone number
-        public async Task<RegisterResponse> RegisterByPhoneNumberAsync(string phoneNumber, string password)
+        public async Task<object> RegisterByPhoneNumberAsync(string phoneNumber, string password)
         {
-            var request = new RegisterByPhoneNumberRequest
+            return await PostAsync<object>("/Shield/Authentication/Register/PhoneNumber", new
             {
-                PhoneNumber = phoneNumber,
-                Password = password
-            };
-            
-            return await PostAsync<RegisterResponse>("/Shield/Authentication/Register/PhoneNumber", request);
+                phoneNumber,
+                password
+            });
         }
 
         // Confirm phone number registration
-        public async Task<LoginResponse> ConfirmPhoneNumberRegistrationAsync(string phoneNumber, string token)
+        public async Task<JwtResponse> ConfirmPhoneNumberRegistrationAsync(string phoneNumber, string token)
         {
-            var request = new ConfirmPhoneNumberRegistrationRequest
+            return await PostAsync<JwtResponse>("/Shield/Authentication/Register/Confirm/PhoneNumber", new
             {
-                PhoneNumber = phoneNumber,
-                Token = token
-            };
-            
-            return await PostAsync<LoginResponse>("/Shield/Authentication/Register/Confirm/PhoneNumber", request);
+                phoneNumber,
+                token
+            });
         }
 
         // Register with provider
-        public async Task<LoginResponse> RegisterByProviderAsync(string providerName, string providerValue, string roleName = "User")
+        public async Task<JwtResponse> RegisterByProviderAsync(string providerName, string providerValue)
         {
-            var request = new RegisterByProviderRequest
+            return await PostAsync<JwtResponse>("/Shield/Authentication/Register/Provider", new
             {
-                ProviderName = providerName,
-                ProviderValue = providerValue,
-                RoleName = roleName
-            };
-            
-            return await PostAsync<LoginResponse>("/Shield/Authentication/Register/Provider", request);
+                providerName,
+                providerValue
+            });
         }
 
         // Logout
-        public async Task<LogoutResponse> LogoutAsync()
+        public async Task<bool> LogoutAsync()
         {
-            var request = new LogoutRequest();
-            
-            return await PostAsync<LogoutResponse>("/Shield/Authentication/Logout", request);
+            return await PostAsync<bool>("/Shield/Authentication/Logout", new { });
         }
 
         // Request enforce logout by email
-        public async Task<LogoutResponse> RequestEnforceLogoutByEmailAsync(string email)
+        public async Task<bool> RequestEnforceLogoutByEmailAsync(string email)
         {
-            var request = new EnforceLogoutByEmailRequest
+            return await PostAsync<bool>("/Shield/Authentication/Logout/Request/Email", new
             {
-                Email = email
-            };
-            
-            return await PostAsync<LogoutResponse>("/Shield/Authentication/Logout/Request/Email", request);
+                email
+            });
         }
 
         // Request enforce logout by phone number
-        public async Task<LogoutResponse> RequestEnforceLogoutByPhoneNumberAsync(string phoneNumber)
+        public async Task<bool> RequestEnforceLogoutByPhoneNumberAsync(string phoneNumber)
         {
-            var request = new EnforceLogoutByPhoneNumberRequest
+            return await PostAsync<bool>("/Shield/Authentication/Logout/Request/PhoneNumber", new
             {
-                PhoneNumber = phoneNumber
-            };
-            
-            return await PostAsync<LogoutResponse>("/Shield/Authentication/Logout/Request/PhoneNumber", request);
+                phoneNumber
+            });
         }
 
         // Confirm enforce logout
-        public async Task<LogoutResponse> ConfirmEnforceLogoutAsync(string token)
+        public async Task<bool> ConfirmEnforceLogoutAsync(string token)
         {
-            var request = new ConfirmEnforceLogoutRequest
+            return await PostAsync<bool>("/Shield/Authentication/Logout/Confirm", new
             {
-                Token = token
-            };
-            
-            return await PostAsync<LogoutResponse>("/Shield/Authentication/Logout/Confirm", request);
+                token
+            });
         }
 
         #endregion
@@ -202,53 +167,45 @@ namespace IdentityShield.Client
         #region Account Linking APIs
 
         // Create managed account
-        public async Task<AccountLinkingResponse> CreateManagedAccountAsync(string email, string password, string linkType)
+        public async Task<bool> CreateManagedAccountAsync(string email, string password, string linkType)
         {
-            var request = new CreateManagedAccountRequest
+            return await PostAsync<bool>("/Shield/AccountLinking/Create", new
             {
-                Email = email,
-                Password = password,
-                LinkType = linkType
-            };
-            
-            return await PostAsync<AccountLinkingResponse>("/Shield/AccountLinking/Create", request);
+                email,
+                password,
+                linkType
+            });
         }
 
         // Link managed account
-        public async Task<AccountLinkingResponse> LinkManagedAccountAsync(string managedAccountId, string linkType)
+        public async Task<bool> LinkManagedAccountAsync(string managedAccountId, string linkType)
         {
-            var request = new LinkManagedAccountRequest
+            return await PostAsync<bool>("/Shield/AccountLinking/Link", new
             {
-                ManagedAccountId = managedAccountId,
-                LinkType = linkType
-            };
-            
-            return await PostAsync<AccountLinkingResponse>("/Shield/AccountLinking/Link", request);
+                managedAccountId,
+                linkType
+            });
         }
 
         // Unlink managed account
-        public async Task<AccountLinkingResponse> UnlinkManagedAccountAsync(string managedAccountId)
+        public async Task<bool> UnlinkManagedAccountAsync(string managedAccountId)
         {
-            var request = new UnlinkManagedAccountRequest
+            return await DeleteAsync<bool>("/Shield/AccountLinking/Unlink", new
             {
-                ManagedAccountId = managedAccountId
-            };
-            
-            return await DeleteAsync<AccountLinkingResponse>("/Shield/AccountLinking/Unlink", request);
+                managedAccountId
+            });
         }
 
         // Get all managed accounts
         public async Task<IEnumerable<ShieldUser>> GetManagedAccountsAsync()
         {
-            var response = await GetAsync<GetManagedAccountsResponse>("/Shield/AccountLinking/Managed/All");
-            return response.Accounts;
+            return await GetAsync<IEnumerable<ShieldUser>>("/Shield/AccountLinking/Managed/All");
         }
 
         // Get all accounts managing this account
         public async Task<IEnumerable<ShieldUser>> GetManagedByAccountsAsync()
         {
-            var response = await GetAsync<GetManagedByAccountsResponse>("/Shield/AccountLinking/ManagedBy/All");
-            return response.Accounts;
+            return await GetAsync<IEnumerable<ShieldUser>>("/Shield/AccountLinking/ManagedBy/All");
         }
 
         #endregion
@@ -256,14 +213,12 @@ namespace IdentityShield.Client
         #region Token Management APIs
 
         // Refresh token
-        public async Task<RefreshTokenResponse> RefreshTokenAsync(string refreshToken)
+        public async Task<JwtResponse> RefreshTokenAsync(string refreshToken)
         {
-            var request = new RefreshTokenRequest
+            return await PostAsync<JwtResponse>("/Shield/Token/Refresh", new
             {
-                RefreshToken = refreshToken
-            };
-            
-            return await PostAsync<RefreshTokenResponse>("/Shield/Token/Refresh", request);
+                refreshToken
+            });
         }
 
         #endregion
@@ -271,25 +226,21 @@ namespace IdentityShield.Client
         #region Email Management APIs
 
         // Request email change
-        public async Task<EmailChangeResponse> RequestEmailChangeAsync(string newEmail)
+        public async Task<bool> RequestEmailChangeAsync(string newEmail)
         {
-            var request = new RequestEmailChangeRequest
+            return await PostAsync<bool>("/Shield/Email/Change/Request", new
             {
-                NewEmail = newEmail
-            };
-            
-            return await PostAsync<EmailChangeResponse>("/Shield/Email/Change/Request", request);
+                newEmail
+            });
         }
 
         // Confirm email change
-        public async Task<EmailChangeResponse> ConfirmEmailChangeAsync(string token)
+        public async Task<bool> ConfirmEmailChangeAsync(string token)
         {
-            var request = new ConfirmEmailChangeRequest
+            return await PostAsync<bool>("/Shield/Email/Change/Confirm", new
             {
-                Token = token
-            };
-            
-            return await PostAsync<EmailChangeResponse>("/Shield/Email/Change/Confirm", request);
+                token
+            });
         }
 
         #endregion
@@ -297,25 +248,21 @@ namespace IdentityShield.Client
         #region Phone Number Management APIs
 
         // Request phone number change
-        public async Task<PhoneNumberChangeResponse> RequestPhoneNumberChangeAsync(string newPhoneNumber)
+        public async Task<bool> RequestPhoneNumberChangeAsync(string newPhoneNumber)
         {
-            var request = new RequestPhoneNumberChangeRequest
+            return await PostAsync<bool>("/Shield/PhoneNumber/Change/Request", new
             {
-                NewPhoneNumber = newPhoneNumber
-            };
-            
-            return await PostAsync<PhoneNumberChangeResponse>("/Shield/PhoneNumber/Change/Request", request);
+                newPhoneNumber
+            });
         }
 
         // Confirm phone number change
-        public async Task<PhoneNumberChangeResponse> ConfirmPhoneNumberChangeAsync(string token)
+        public async Task<bool> ConfirmPhoneNumberChangeAsync(string token)
         {
-            var request = new ConfirmPhoneNumberChangeRequest
+            return await PostAsync<bool>("/Shield/PhoneNumber/Change/Confirm", new
             {
-                Token = token
-            };
-            
-            return await PostAsync<PhoneNumberChangeResponse>("/Shield/PhoneNumber/Change/Confirm", request);
+                token
+            });
         }
 
         #endregion
@@ -323,63 +270,53 @@ namespace IdentityShield.Client
         #region Password Management APIs
 
         // Forgot password by email
-        public async Task<PasswordResponse> ForgotPasswordByEmailAsync(string email)
+        public async Task<bool> ForgotPasswordByEmailAsync(string email)
         {
-            var request = new ForgotPasswordByEmailRequest
+            return await PostAsync<bool>("/Shield/Password/Forgot/Email", new
             {
-                Email = email
-            };
-            
-            return await PostAsync<PasswordResponse>("/Shield/Password/Forgot/Email", request);
+                email
+            });
         }
 
         // Forgot password by phone number
-        public async Task<PasswordResponse> ForgotPasswordByPhoneNumberAsync(string phoneNumber)
+        public async Task<bool> ForgotPasswordByPhoneNumberAsync(string phoneNumber)
         {
-            var request = new ForgotPasswordByPhoneNumberRequest
+            return await PostAsync<bool>("/Shield/Password/Forgot/PhoneNumber", new
             {
-                PhoneNumber = phoneNumber
-            };
-            
-            return await PostAsync<PasswordResponse>("/Shield/Password/Forgot/PhoneNumber", request);
+                phoneNumber
+            });
         }
 
         // Reset password by email
-        public async Task<PasswordResponse> ResetPasswordByEmailAsync(string email, string token, string newPassword)
+        public async Task<bool> ResetPasswordByEmailAsync(string email, string token, string newPassword)
         {
-            var request = new ResetPasswordByEmailRequest
+            return await PostAsync<bool>("/Shield/Password/Reset/Email", new
             {
-                Email = email,
-                Token = token,
-                NewPassword = newPassword
-            };
-            
-            return await PostAsync<PasswordResponse>("/Shield/Password/Reset/Email", request);
+                email,
+                token,
+                newPassword
+            });
         }
 
         // Reset password by phone number
-        public async Task<PasswordResponse> ResetPasswordByPhoneNumberAsync(string phoneNumber, string token, string newPassword)
+        public async Task<bool> ResetPasswordByPhoneNumberAsync(string phoneNumber, string token, string newPassword)
         {
-            var request = new ResetPasswordByPhoneNumberRequest
+            return await PostAsync<bool>("/Shield/Password/Reset/PhoneNumber", new
             {
-                PhoneNumber = phoneNumber,
-                Token = token,
-                NewPassword = newPassword
-            };
-            
-            return await PostAsync<PasswordResponse>("/Shield/Password/Reset/PhoneNumber", request);
+                phoneNumber,
+                token,
+                newPassword
+            });
         }
 
         // Change password
-        public async Task<PasswordResponse> ChangePasswordAsync(string currentPassword, string newPassword)
+        public async Task<bool> ChangePasswordAsync(string currentPassword, string newPassword)
         {
-            var request = new ChangePasswordRequest
+            return await PostAsync<bool>("/Shield/Password/Change", new
             {
-                CurrentPassword = currentPassword,
-                NewPassword = newPassword
-            };
-            
-            return await PostAsync<PasswordResponse>("/Shield/Password/Change", request);
+                currentPassword,
+                newPassword
+            });
         }
 
         #endregion
@@ -387,26 +324,22 @@ namespace IdentityShield.Client
         #region Provider Management APIs
 
         // Link provider
-        public async Task<ProviderResponse> LinkProviderAsync(string providerName, string providerValue)
+        public async Task<bool> LinkProviderAsync(string providerName, string providerValue)
         {
-            var request = new LinkProviderRequest
+            return await PostAsync<bool>("/Shield/Provider/Link", new
             {
-                ProviderName = providerName,
-                ProviderValue = providerValue
-            };
-            
-            return await PostAsync<ProviderResponse>("/Shield/Provider/Link", request);
+                providerName,
+                providerValue
+            });
         }
 
         // Unlink provider
-        public async Task<ProviderResponse> UnlinkProviderAsync(string providerName)
+        public async Task<bool> UnlinkProviderAsync(string providerName)
         {
-            var request = new UnlinkProviderRequest
+            return await PostAsync<bool>("/Shield/Provider/Unlink", new
             {
-                ProviderName = providerName
-            };
-            
-            return await PostAsync<ProviderResponse>("/Shield/Provider/Unlink", request);
+                providerName
+            });
         }
 
         #endregion
