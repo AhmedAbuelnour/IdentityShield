@@ -167,7 +167,7 @@ namespace IdentityShield.Sdk
         #region Account Linking APIs
 
         // Create managed account
-        public async Task<bool> CreateManagedAccountAsync(CreateManagedAccountRequest request, CancellationToken cancellationToken)
+        public async Task<bool> CreateManagedAccountAsync(CreateManagedAccount.Request request, CancellationToken cancellationToken)
         {
             return await PostAsync<bool>("/Shield/AccountLinking/Create", request, cancellationToken);
         }
