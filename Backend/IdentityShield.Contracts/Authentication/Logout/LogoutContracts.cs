@@ -1,26 +1,53 @@
 namespace IdentityShield.Contracts.Authentication.Logout
 {
-    public class LogoutRequest
+    public static class Logout
     {
+        public class Request
+        {
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 
-    public class EnforceLogoutByEmailRequest
+    public static class RequestEnforceLogoutByEmail
     {
-        public string Email { get; set; }
+        public class Request
+        {
+            public string Email { get; set; }
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 
-    public class EnforceLogoutByPhoneNumberRequest
+    public static class RequestEnforceLogoutByPhoneNumber
     {
-        public string PhoneNumber { get; set; }
+        public class Request
+        {
+            public string PhoneNumber { get; set; }
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 
-    public class ConfirmEnforceLogoutRequest
+    public static class ConfirmEnforceLogout
     {
-        public string Token { get; set; }
-    }
+        public class Request
+        {
+            public string Token { get; set; }
+        }
 
-    public class LogoutResponse
-    {
-        public bool Success { get; set; }
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 }

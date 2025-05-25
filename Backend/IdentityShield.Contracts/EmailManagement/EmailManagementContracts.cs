@@ -1,17 +1,28 @@
 namespace IdentityShield.Contracts.EmailManagement
 {
-    public class RequestEmailChangeRequest
+    public static class RequestEmailChange
     {
-        public string NewEmail { get; set; }
+        public class Request
+        {
+            public string NewEmail { get; set; }
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 
-    public class ConfirmEmailChangeRequest
+    public static class ConfirmEmailChange
     {
-        public string Token { get; set; }
-    }
+        public class Request
+        {
+            public string Token { get; set; }
+        }
 
-    public class EmailChangeResponse
-    {
-        public bool Success { get; set; }
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 }

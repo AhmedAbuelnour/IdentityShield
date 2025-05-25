@@ -1,18 +1,29 @@
 namespace IdentityShield.Contracts.ProviderManagement
 {
-    public class LinkProviderRequest
+    public static class LinkProvider
     {
-        public string ProviderName { get; set; }
-        public string ProviderValue { get; set; }
+        public class Request
+        {
+            public string ProviderName { get; set; }
+            public string ProviderValue { get; set; }
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 
-    public class UnlinkProviderRequest
+    public static class UnlinkProvider
     {
-        public string ProviderName { get; set; }
-    }
+        public class Request
+        {
+            public string ProviderName { get; set; }
+        }
 
-    public class ProviderResponse
-    {
-        public bool Success { get; set; }
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 }

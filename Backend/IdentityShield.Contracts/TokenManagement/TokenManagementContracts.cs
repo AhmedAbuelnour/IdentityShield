@@ -1,13 +1,16 @@
 namespace IdentityShield.Contracts.TokenManagement
 {
-    public class RefreshTokenRequest
+    public static class RefreshToken
     {
-        public string RefreshToken { get; set; }
-    }
+        public class Request
+        {
+            public string RefreshToken { get; set; }
+        }
 
-    public class RefreshTokenResponse
-    {
-        public string AccessToken { get; set; }
-        public string RefreshToken { get; set; }
+        public class Response
+        {
+            public string AccessToken { get; set; }
+            public string RefreshToken { get; set; }
+        }
     }
 }

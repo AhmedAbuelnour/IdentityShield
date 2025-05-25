@@ -1,39 +1,78 @@
 namespace IdentityShield.Contracts.Authentication.Register
 {
-    public class RegisterByEmailRequest
+    public static class RegisterByEmail
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public class Request
+        {
+            public string Email { get; set; }
+            public string Password { get; set; }
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+            public string Message { get; set; }
+        }
     }
 
-    public class RegisterByPhoneNumberRequest
+    public static class ConfirmEmailRegistration
     {
-        public string PhoneNumber { get; set; }
-        public string Password { get; set; }
+        public class Request
+        {
+            public string Email { get; set; }
+            public string Token { get; set; }
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+            public string Message { get; set; }
+        }
     }
 
-    public class RegisterByProviderRequest
+    public static class RegisterByPhoneNumber
     {
-        public string ProviderName { get; set; }
-        public string ProviderValue { get; set; }
-        public string RoleName { get; set; } = "User";
+        public class Request
+        {
+            public string PhoneNumber { get; set; }
+            public string Password { get; set; }
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+            public string Message { get; set; }
+        }
     }
 
-    public class ConfirmEmailRegistrationRequest
+    public static class ConfirmPhoneNumberRegistration
     {
-        public string Email { get; set; }
-        public string Token { get; set; }
+        public class Request
+        {
+            public string PhoneNumber { get; set; }
+            public string Token { get; set; }
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+            public string Message { get; set; }
+        }
     }
 
-    public class ConfirmPhoneNumberRegistrationRequest
+    public static class RegisterByProvider
     {
-        public string PhoneNumber { get; set; }
-        public string Token { get; set; }
-    }
+        public class Request
+        {
+            public string ProviderName { get; set; }
+            public string ProviderValue { get; set; }
+            public string RoleName { get; set; } = "User";
+        }
 
-    public class RegisterResponse
-    {
-        public bool Success { get; set; }
-        public string Message { get; set; }
+        public class Response
+        {
+            public bool Success { get; set; }
+            public string Message { get; set; }
+        }
     }
 }

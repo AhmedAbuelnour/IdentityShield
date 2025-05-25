@@ -1,37 +1,72 @@
 namespace IdentityShield.Contracts.PasswordManagement
 {
-    public class ForgotPasswordByEmailRequest
+    public static class ForgotPasswordByEmail
     {
-        public string Email { get; set; }
+        public class Request
+        {
+            public string Email { get; set; }
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 
-    public class ForgotPasswordByPhoneNumberRequest
+    public static class ForgotPasswordByPhoneNumber
     {
-        public string PhoneNumber { get; set; }
+        public class Request
+        {
+            public string PhoneNumber { get; set; }
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 
-    public class ResetPasswordByEmailRequest
+    public static class ResetPasswordByEmail
     {
-        public string Email { get; set; }
-        public string Token { get; set; }
-        public string NewPassword { get; set; }
+        public class Request
+        {
+            public string Email { get; set; }
+            public string Token { get; set; }
+            public string NewPassword { get; set; }
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 
-    public class ResetPasswordByPhoneNumberRequest
+    public static class ResetPasswordByPhoneNumber
     {
-        public string PhoneNumber { get; set; }
-        public string Token { get; set; }
-        public string NewPassword { get; set; }
+        public class Request
+        {
+            public string PhoneNumber { get; set; }
+            public string Token { get; set; }
+            public string NewPassword { get; set; }
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 
-    public class ChangePasswordRequest
+    public static class ChangePassword
     {
-        public string CurrentPassword { get; set; }
-        public string NewPassword { get; set; }
-    }
+        public class Request
+        {
+            public string CurrentPassword { get; set; }
+            public string NewPassword { get; set; }
+        }
 
-    public class PasswordResponse
-    {
-        public bool Success { get; set; }
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 }

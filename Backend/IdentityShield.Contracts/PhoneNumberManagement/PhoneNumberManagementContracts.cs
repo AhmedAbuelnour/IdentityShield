@@ -1,17 +1,28 @@
 namespace IdentityShield.Contracts.PhoneNumberManagement
 {
-    public class RequestPhoneNumberChangeRequest
+    public static class RequestPhoneNumberChange
     {
-        public string NewPhoneNumber { get; set; }
+        public class Request
+        {
+            public string NewPhoneNumber { get; set; }
+        }
+
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 
-    public class ConfirmPhoneNumberChangeRequest
+    public static class ConfirmPhoneNumberChange
     {
-        public string Token { get; set; }
-    }
+        public class Request
+        {
+            public string Token { get; set; }
+        }
 
-    public class PhoneNumberChangeResponse
-    {
-        public bool Success { get; set; }
+        public class Response
+        {
+            public bool Success { get; set; }
+        }
     }
 }
