@@ -64,7 +64,7 @@ namespace IdentityShield.Contracts.AccountLinking
         }
     }
 
-    public static class GetManagedAccounts
+    public static class GetManagedByAccounts
     {
         public class Request
         {
