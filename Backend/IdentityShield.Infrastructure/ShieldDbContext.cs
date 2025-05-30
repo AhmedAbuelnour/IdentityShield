@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using OpenIddict.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace IdentityShield.Infrastructure
@@ -17,6 +18,8 @@ namespace IdentityShield.Infrastructure
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.UseOpenIddict();
 
             // Rename Identity tables
             builder.Entity<ShieldUser>(b => b.ToTable("ShieldUsers"));

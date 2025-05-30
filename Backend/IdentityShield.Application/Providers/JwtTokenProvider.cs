@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using OpenIddict.Abstractions;
+using OpenIddict.Server;
+using OpenIddict.Server.AspNetCore;
 using System.Security.Claims;
 using System.Text;
 
@@ -13,7 +16,8 @@ namespace IdentityShield.Application.Providers
 {
     public sealed class JwtTokenProvider<TUser>(IOptions<ShieldOptions> shieldOptions,
                                                 IRefreshTokenRepository _refreshTokenRepo,
-                                                IIdentityClaimMapper<TUser> claimMapper) where TUser : IdentityUser
+                                                IIdentityClaimMapper<TUser> claimMapper,
+                                                IOpenIddictTokenGenerator _tokenGenerator) where TUser : IdentityUser
     {
         public async Task<JwtResponse> GetJwtAsync(TUser user, string[] roles, CancellationToken cancellationToken = default)
         {
@@ -22,11 +26,11 @@ namespace IdentityShield.Application.Providers
             return new JwtResponse
             {
                 RefreshToken = identityRefreshToken.Token,
-                AccessToken = GetAccessToken(shieldOptions, claimMapper, user, roles, identityRefreshToken.SessionId)
+                AccessToken = await GetAccessTokenAsync(shieldOptions, claimMapper, user, roles, identityRefreshToken.SessionId, cancellationToken)
             };
         }
 
-        private static string GetAccessToken(IOptions<ShieldOptions> shieldOptions, IIdentityClaimMapper<TUser> claimMapper, TUser user, string[] roles, Guid? sessionId)
+        private async Task<string> GetAccessTokenAsync(IOptions<ShieldOptions> shieldOptions, IIdentityClaimMapper<TUser> claimMapper, TUser user, string[] roles, Guid? sessionId, CancellationToken cancellationToken)
         {
             List<Claim> claims =
             [
@@ -50,18 +54,17 @@ namespace IdentityShield.Application.Providers
                 claims.Add(new Claim(shieldOptions.Value.SessionClaimType, sessionId.Value.ToString()));
             }
 
-            SecurityTokenDescriptor tokenDescriptor = new()
+            var identity = new ClaimsIdentity(claims, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme, shieldOptions.Value.NameClaimType, shieldOptions.Value.RoleClaimType);
+            var principal = new ClaimsPrincipal(identity);
+
+            principal.SetScopes([OpenIddictConstants.Scopes.OpenId, OpenIddictConstants.Scopes.OfflineAccess]);
+
+            foreach (var claim in principal.Claims)
             {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.Add(shieldOptions.Value.AccessTokenExpiration),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(shieldOptions.Value.SecretKey)), SecurityAlgorithms.HmacSha256),
-                Issuer = shieldOptions.Value.Issuer,
-                IssuedAt = DateTime.UtcNow,
-            };
+                claim.SetDestinations(OpenIddictConstants.Destinations.AccessToken);
+            }
 
-            JsonWebTokenHandler jsonWebTokenHandler = new();
-
-            return jsonWebTokenHandler.CreateToken(tokenDescriptor);
+            return await _tokenGenerator.CreateAccessTokenAsync(principal, cancellationToken: cancellationToken);
         }
     }
 

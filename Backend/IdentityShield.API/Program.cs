@@ -1,6 +1,7 @@
 using Flaminco.MinimalMediatR.Extensions;
 using IdentityShield.Application;
 using IdentityShield.Infrastructure;
+using OpenIddict.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,7 +47,28 @@ builder.Services.AddSwaggerGen(config =>
 
 builder.Services.AddModules<Program>();
 
-builder.Services.AddApplicationDIContainer().AddInfrastructureDIContainer(builder.Configuration);
+builder.Services.AddApplicationDIContainer()
+       .AddInfrastructureDIContainer(builder.Configuration);
+
+builder.Services.AddOpenIddict()
+    .AddCore(options =>
+    {
+        options.UseEntityFrameworkCore()
+               .UseDbContext<ShieldDbContext>();
+    })
+    .AddServer(options =>
+    {
+        options.SetTokenEndpointUris("/connect/token");
+        options.AllowPasswordFlow();
+        options.AllowRefreshTokenFlow();
+        options.AcceptAnonymousClients();
+
+        options.UseAspNetCore()
+               .EnableTokenEndpointPassthrough();
+
+        options.AddDevelopmentEncryptionCertificate()
+               .AddDevelopmentSigningCertificate();
+    });
 
 builder.Services.AddAuthorization();
 
