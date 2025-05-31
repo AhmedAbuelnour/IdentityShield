@@ -10,9 +10,9 @@ using System.Text;
 
 namespace IdentityShield.Infrastructure.Implementations;
 
-public class NotificationService(VodafoneSMSClient vodafoneSMSClient, IOptions<ShieldOptions> _shieldOptions) : INotificationService
+public class NotificationService(VodafoneSMSClient vodafoneSMSClient, IOptions<EmailOptions> emailOptionsAccessor) : INotificationService
 {
-    private readonly EmailOptions emailOptions = _shieldOptions.Value.EmailOptions;
+    private readonly EmailOptions emailOptions = emailOptionsAccessor.Value;
     public async Task<bool> SendEmailAsync<TUser>(TUser user, string mailSubject, string token, CancellationToken cancellationToken) where TUser : IdentityUser
     {
 

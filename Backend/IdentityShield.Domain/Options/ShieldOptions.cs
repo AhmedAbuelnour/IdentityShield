@@ -69,9 +69,6 @@ namespace IdentityShield.Domain.Options
 
         public bool SingleActiveSessionEnabled { get; set; } = true;
 
-
-        public EmailOptions? EmailOptions { get; set; }
-
         /// <summary>
         /// Validates the Shield options.
         /// </summary>

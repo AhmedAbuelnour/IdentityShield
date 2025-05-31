@@ -3,26 +3,26 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
+using IdentityShield.Domain.Options;
+using Microsoft.Extensions.Options;
+
 namespace IdentityShield.Infrastructure.Clients
 {
-    public class VodafoneSMSClient(HttpClient httpClient)
+    public class VodafoneSMSClient(HttpClient httpClient, IOptions<VodafoneSMSOptions> options)
     {
-        private const string AccountId = "550142009"; // Replace with your account ID
-        private const string Password = "Vodafone.1"; // Replace with your password
-        private const string SecureHashSecretKey = "A22ED688678C4FA7A8D9B74BDF4F32F1"; // Replace with your secure hash secret key
-        private const string SenderName = "Telmeez APP"; // Replace with your secure hash secret key
+        private readonly VodafoneSMSOptions _options = options.Value;
 
         public async Task<bool> SendSmsAsync(string receiverMsisdn, string smsText, CancellationToken cancellationToken)
         {
             string secureHash = GenerateSecureHash(receiverMsisdn, smsText);
 
-            HttpResponseMessage response = await httpClient.PostAsync("https://e3len.vodafone.com.eg/web2sms/sms/submit/", new StringContent($@"<?xml version='1.0' encoding='UTF-8'?>
+            HttpResponseMessage response = await httpClient.PostAsync(_options.BaseUrl, new StringContent($@"<?xml version='1.0' encoding='UTF-8'?>
 <SubmitSMSRequest xmlns:='http://www.edafa.com/web2sms/sms/model/' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.edafa.com/web2sms/sms/model/ SMSAPI.xsd ' xsi:type='SubmitSMSRequest'>
-    <AccountId>{AccountId}</AccountId>
-    <Password>{Password}</Password>
+    <AccountId>{_options.AccountId}</AccountId>
+    <Password>{_options.Password}</Password>
     <SecureHash>{secureHash}</SecureHash>
     <SMSList>
-        <SenderName>{SenderName}</SenderName>
+        <SenderName>{_options.SenderName}</SenderName>
         <ReceiverMSISDN>{receiverMsisdn}</ReceiverMSISDN>
         <SMSText>{smsText}</SMSText>
     </SMSList>
@@ -33,11 +33,11 @@ namespace IdentityShield.Infrastructure.Clients
             return HandleApiResponse(await response.Content.ReadAsStringAsync(cancellationToken));
         }
 
-        private static string GenerateSecureHash(string receiverMsisdn, string smsText)
+        private string GenerateSecureHash(string receiverMsisdn, string smsText)
         {
-            string concatenatedString = $"AccountId={AccountId}&Password={Password}&SenderName={SenderName}&ReceiverMSISDN={receiverMsisdn}&SMSText={smsText}";
+            string concatenatedString = $"AccountId={_options.AccountId}&Password={_options.Password}&SenderName={_options.SenderName}&ReceiverMSISDN={receiverMsisdn}&SMSText={smsText}";
 
-            using (var hmacSha256 = new HMACSHA256(Encoding.ASCII.GetBytes(SecureHashSecretKey)))
+            using (var hmacSha256 = new HMACSHA256(Encoding.ASCII.GetBytes(_options.SecureHashSecretKey)))
             {
                 byte[] hashBytes = hmacSha256.ComputeHash(Encoding.ASCII.GetBytes(concatenatedString));
 
